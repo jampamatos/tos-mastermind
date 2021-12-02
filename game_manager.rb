@@ -1,4 +1,5 @@
 require_relative 'answer'
+require_relative 'messages'
 
 answer_class = Answer.new
 
@@ -37,17 +38,19 @@ end
 
 def compare_answer(guess, answer)
   compared = []
+  hits = []
   guess.each_with_index do |n, i|
     #puts "Guess #{n} answer #{answer[i]}"
     if n == answer[i]
-      puts "et voilá"
       compared << n    
+      hits << ' ● '
     end    
   end
   guess.each do |n|
     #puts "Guess #{n} answer #{answer[guess.index(n)]}"
     if answer.include?(n) && !compared.include?(n)
-      puts "oopsie!"
+      hits << ' ○ '
     end
   end
+  puts hits.join()
 end
