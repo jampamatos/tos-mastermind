@@ -24,7 +24,7 @@ def getCorrect
 end
 
 def main_menu
-  #welcome
+  welcome
   choice = main_menu_message
   menu_selection(choice)
 end
@@ -33,7 +33,7 @@ def menu_selection(choice)
   if choice.to_i == 1
     start
   elsif choice.to_i == 2
-    puts 'exit'
+    exit_game
   else
     puts ''
     puts "Wrong input."
@@ -112,6 +112,9 @@ def computer_turn
 end
 
 def start_round
+  human_points = ''
+  computer_points = ''
+
   puts "#{'Scoreboard'.colorize(:red).bold}:"
   puts "#{'Human'.bold}: #{@human_score}"
   puts "#{'Computer'.bold}: #{@computer_score}"
@@ -122,8 +125,10 @@ def start_round
   if h_turns == 50
     puts "You did not break computer's code."
     puts "Computer played #{@answer}"
+    human_points = 'could not break code'
   else
     puts "You guessed in #{h_turns} turns."
+    human_points = "guessed in #{h_turns} turns"
   end
 
   sleep(2)
@@ -131,18 +136,52 @@ def start_round
   c_turns = computer_turn
   if c_turns == 50
     puts "Computer couldn't break your code!"
+    computer_points = 'could not break code'
   else
     puts "Computer guessed in #{c_turns} turns."
+    computer_points = "guessed in #{c_turns} turns"
   end
 
   puts ''
-  
+  puts "Human #{human_points}."
+  puts "Computer #{computer_points}"
+  puts ''
+  if h_turns.to_i < c_turns.to_i
+    puts "You win!"
+    @human_score += 1
+  elsif c_turns.to_i < h_turns.to_i
+    puts "Computer wins!"
+    @computer_score += 1
+  else
+    puts "It's a draw!"
+  end
+end
+
+def replay
+  puts 'Do you want to play again?'
+  puts '(Y/N)'
+  again = gets.chomp.upcase
+
+  if again == 'Y'
+    start_round
+  elsif again == 'N'
+    exit_game
+  else
+    puts 'Please type Y or N.'
+    replay
+  end
+end
+
+def exit_game
+  system 'clear'
+  puts 'Thank you for playing!'
 end
 
 def start
-  #start_msg
+  start_msg
   puts ''
   start_round
+  replay
 end
 
 def make_guess
