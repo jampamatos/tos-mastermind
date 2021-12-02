@@ -1,7 +1,7 @@
-require_relative 'answer'
+require_relative 'computer_player'
 require_relative 'messages'
 
-include Answer
+include ComputerPlayer
 
 @guess = ''
 @answer = ''
@@ -44,19 +44,20 @@ end
 
 def define_answer
   puts "Create a code 4 numbers long, from 1 to 6:"
-  new_answer = gets.chomp
-  if new_answer.length != 4
+  play_answer = gets.chomp
+  if play_answer.length != 4
     puts "Your number should be 4 characters long."
     define_answer
-  elsif new_answer =~ /0+|[7-9]+/
+  elsif play_answer =~ /0+|[7-9]+/
     puts "All characters must be between 1 and 6."
-    define_answer
+    play_answer
   else
-    return new_answer.chars
+    return play_answer.chars
   end
 end
 
 def human_turn
+  @correct = false
   @answer = new_answer
   @human_turn = true
   @computer_turn = false
@@ -74,11 +75,14 @@ def human_turn
     break if @correct == true
     guesses += 1
   end
+
+  guesses = 50 if guesses >= 10
   
   return guesses
 end
 
 def computer_turn
+  @correct = false
   @human_turn = false
   @computer_turn = true
 
@@ -93,11 +97,16 @@ def computer_turn
   guesses = 0  
   while guesses < 10
     puts "#{'Remaining guesses:'.bold} #{10-guesses}"
-    @guess = 
+    @guess = computer_guess
+    puts "Computer guessed: #{@guess.join}"
+    puts "Your code: #{@answer.join}"
     compare_answer(@guess, @answer)
+    sleep(2)
     break if @correct == true
     guesses += 1
   end
+
+  guesses = 50 if guesses >= 10
   
   return guesses
 end
@@ -110,12 +119,24 @@ def start_round
   sleep(1)
 
   h_turns = human_turn
-  puts "You guessed in #{h_turns} turns."
+  if h_turns == 50
+    puts "You did not break computer's code."
+    puts "Computer played #{@answer}"
+  else
+    puts "You guessed in #{h_turns} turns."
+  end
 
   sleep(2)
 
   c_turns = computer_turn
-  puts "You guessed in #{c_turns} turns."
+  if c_turns == 50
+    puts "Computer couldn't break your code!"
+  else
+    puts "Computer guessed in #{c_turns} turns."
+  end
+
+  puts ''
+  
 end
 
 def start
