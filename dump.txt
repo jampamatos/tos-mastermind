@@ -1,0 +1,59 @@
+def computer_guess
+  num = []
+  4.times do
+    num << rand(1..6).to_s
+  end
+  @computer_hits = []
+  return num
+end
+
+--------------------------
+
+if @computer_blacks == [] && @computer_whites == []
+    4.times do num_to_guess << @num_to_try.to_s
+    end
+
+
+    
+  elsif @ai_correct_num.length < 4 && @computer_blacks.length >=1 || @ai_correct_num.length < 4 && @computer_whites.length >=1
+
+  
+
+
+    if @computer_blacks.length >=1 && !@ai_blacks_num.includes?(@num_to_try - 1)
+      (4 - computer_blacks.lenght).times do @ai_blacks_num << (@num_to_try - 1).to_s
+      (4 - computer_blacks.lenght).times do @ai_correct_num << (@num_to_try - 1).to_s
+      end
+    if @computer_whites.length >=1 && !@ai_whites_num.includes?(@num_to_try - 1)
+      (4 - computer_whites.lenght).times do @ai_whites_num << (@num_to_try - 1).to_s
+      (4 - computer_whites.lenght).times do @ai_correct_num << (@num_to_try - 1).to_s
+    end
+
+
+           
+    if @ai_correct_num.length == 4
+      @ai_correct_num.each do |e|
+        num_to_guess << e.dup
+      end
+
+      ai.guessed << num_to_guess.join()
+      
+    elsif @ai_correct_num.length < 4
+      @ai_correct_num.each do |e|
+        num_to_guess << e.dup.to_s
+      end
+      (4 - num_to_guess.length).times do
+        num_to_guess << @num_to_try.to_s
+      end
+    end
+  end
+
+           *** BE HERE NOW ***
+
+  if @ai_correct_num.length == 4
+    if @ai_guessed.includes?(@ai_correct_num.join())
+      new_guess = @ai.correct_num.shuffle
+      new_guess.each { |e| num_to_guess << e.dup.to_s }
+      ai.guessed << num_to_guess.join()
+    end
+  end
