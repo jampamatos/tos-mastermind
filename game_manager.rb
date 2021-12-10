@@ -211,32 +211,32 @@ def make_guess
 end
 
 def compare_answer(guess, answer)
-  compared = []
+  compared_guess_i = []
+  compared_answer_i = []
   hits = []
   count_black_hits = 0
   count_white_hits = 0
+
   guess.each_with_index do |n, i|
     if n == answer[i]
+      compared_guess_i << i
+      compared_answer_i << i
       count_black_hits += 1
-      if answer.count { |x| x.match(n) } > count_black_hits
-        count_white_hits = answer.count { |x| x.match(n) } - 1
-      else
-        count_white_hits = 0
-      end
     end    
-  end
+  end   
 
-    guess.each_with_index do |n, i|
-     if n == answer[i]
-        compared << n
-     end    
-  end
-
-  guess.each do |n|
-    if answer.include?(n) && !compared.include?(n)
-      count_white_hits += 1
+  answer.each_with_index do |ans_n, ans_i|
+    guess.each_with_index do |guess_n, guess_i|
+      if !compared_guess_i.include?(guess_i) && !compared_answer_i.include?(ans_i)
+        if guess_n == ans_n
+          compared_guess_i << guess_i
+          compared_answer_i << ans_i
+          count_white_hits += 1
+        end
+      end
     end
   end
+
 
   count_black_hits.times { hits << ' ● ' }
   count_white_hits.times { hits << ' ○ ' }
