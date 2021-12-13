@@ -58,8 +58,8 @@ end
 
 def computer_turn_text
   puts "#{'CODEMAKER'.colorize(:green)}: #{'Human'.underline}"
-  #sleep(1)
+  sleep(1)
   puts "#{'CODEBREAKER'.colorize(:blue)}: #{'Computer'.underline}"
-  #sleep(1)
+  sleep(1)
   puts ''
 end

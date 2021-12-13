@@ -30,7 +30,7 @@ def getCorrect
 end
 
 def main_menu
-  #welcome
+  welcome
   choice = main_menu_message
   menu_selection(choice)
 end
@@ -112,7 +112,6 @@ def computer_turn
     puts "Computer guessed: #{@guess.join}"
     puts "Your code: #{@answer.join}"
     compare_answer(@guess, @answer)
-    p @computer_hits
     sleep(2)
     break if @correct == true
     guesses += 1
@@ -126,24 +125,26 @@ end
 def start_round
   human_points = ''
   computer_points = ''
+  @guess = ''
+  @answer = ''
 
-  #puts "#{'Scoreboard'.colorize(:red).bold}:"
-  #puts "#{'Human'.bold}: #{@human_score}"
-  #puts "#{'Computer'.bold}: #{@computer_score}"
-  #puts ''
-  #sleep(1)
+  puts "#{'Scoreboard'.colorize(:red).bold}:"
+  puts "#{'Human'.bold}: #{@human_score}"
+  puts "#{'Computer'.bold}: #{@computer_score}"
+  puts ''
+  sleep(1)
 
-  #h_turns = human_turn
-  #if h_turns == 50
-  #  puts "You did not break computer's code."
-  #  puts "Computer played #{@answer}"
-  #  human_points = 'could not break code'
-  #else
-  #  puts "You guessed in #{h_turns} turns."
-  #  human_points = "guessed in #{h_turns} turns"
-  #end
+  h_turns = human_turn
+  if h_turns == 50
+    puts "You did not break computer's code."
+    puts "Computer played #{@answer.join('')}"
+    human_points = 'could not break code'
+  else
+    puts "You guessed in #{h_turns} turns."
+    human_points = "guessed in #{h_turns} turns"
+  end
 
-  #sleep(2)
+  sleep(2)
 
   c_turns = computer_turn
   if c_turns == 50
@@ -167,6 +168,9 @@ def start_round
   else
     puts "It's a draw!"
   end
+
+  replay
+
 end
 
 def replay
@@ -186,14 +190,17 @@ end
 
 def exit_game
   system 'clear'
+  puts "#{'Final Score'.colorize(:red).bold}:"
+  puts "#{'Human'.bold}: #{@human_score}"
+  puts "#{'Computer'.bold}: #{@computer_score}"
+  puts ''
   puts 'Thank you for playing!'
 end
 
 def start
-  #start_msg
-  #puts ''
+  start_msg
+  puts ''
   start_round
-  replay
 end
 
 def make_guess
@@ -206,7 +213,7 @@ def make_guess
     puts "All characters must be numbers between 1 and 6."
     make_guess
   else
-    @guess = new_guess.chars
+    return new_guess.chars
   end
 end
 
@@ -214,14 +221,13 @@ def compare_answer(guess, answer)
   compared_guess_i = []
   compared_answer_i = []
   hits = []
-  count_black_hits = 0
-  count_white_hits = 0
-
+  @computer_hits = hits if @computer_turn == true
+  
   guess.each_with_index do |n, i|
     if n == answer[i]
       compared_guess_i << i
       compared_answer_i << i
-      count_black_hits += 1
+      hits << ' ● '
     end    
   end   
 
@@ -231,17 +237,12 @@ def compare_answer(guess, answer)
         if guess_n == ans_n
           compared_guess_i << guess_i
           compared_answer_i << ans_i
-          count_white_hits += 1
+          hits << ' ○ '
         end
       end
     end
   end
 
-
-  count_black_hits.times { hits << ' ● ' }
-  count_white_hits.times { hits << ' ○ ' }
-
-  @computer_hits = hits if @computer_turn == true
   puts hits.join()
   @correct = true if hits.join() == " ●  ●  ●  ● "
 end
@@ -249,9 +250,9 @@ end
 def computer_answer
   num = []
   4.times do
-    num << rand(1..6)
+    num << rand(1..6).to_s
   end
-  return num.join()
+  return num
 end
 
 def computer_guess
@@ -278,19 +279,28 @@ def computer_guess
     (4 - num_to_guess.length).times { num_to_guess << @num_to_try.to_s }
     @ai_guessed << num_to_guess.join().to_s
 
-  elsif @ai_correct_num.length == 4 
-
-    if @ai_guessed.include?(@ai_correct_num.join().to_s)
-      new_guess = @ai_correct_num.shuffle
+    if @ai_correct_num.length == 4
+      num_to_guess = []
+      new_guess = shuffle_nums
       new_guess.each { |e| num_to_guess << e.dup.to_s }
       @ai_guessed << num_to_guess.join().to_s
-    else
-      @ai_correct_num.each { |e| num_to_guess << e.dup.to_s }
-      @ai_guessed << num_to_guess.join().to_s
     end
+
+  elsif @computer_hits.length == 4
+    new_guess = shuffle_nums
+    new_guess.each { |e| num_to_guess << e.dup.to_s }
+      @ai_guessed << num_to_guess.join().to_s
   end
     
   @num_to_try += 1
   return num_to_guess
 
+end
+
+def shuffle_nums
+  nums_shuffled = @ai_correct_num.shuffle
+  if @ai_guessed.include?(nums_shuffled.join().to_s)
+    nums_shuffled = shuffle_nums      
+  end
+  return nums_shuffled
 end
